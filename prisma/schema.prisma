@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id // Firebase UID
+  email     String   @unique
+  role      Role     @default(CUSTOMER)
+  name      String?
+  phone     String?
+  address   String?
+  age       Int?
+  description String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  shop      Shop?
+  orders    Order[]
+}
+
+enum Role {
+  CUSTOMER
+  SHOP_OWNER
+}
+
+model Shop {
+  id          String    @id @default(uuid())
+  ownerId     String    @unique
+  owner       User      @relation(fields: [ownerId], references: [id])
+  name        String
+  description String?
+  address     String
+  phone       String?
+  email       String?
+  latitude    Float?
+  longitude   Float?
+  image       String?   // Firebase Storage URL
+  minOrder    Float?    @default(0)
+  
+  // Relations
+  services    Service[]
+  orders      Order[]
+  reviews     Review[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int
+  comment   String?
+  
+  shopId    String
+  shop      Shop     @relation(fields: [shopId], references: [id])
+  
+  customerId String // Firebase UID
+  
+  createdAt DateTime @default(now())
+}
+
+model Service {
+  id          String  @id @default(uuid())
+  shopId      String
+  shop        Shop    @relation(fields: [shopId], references: [id])
+  name        String  // e.g. "White Shirt", "Jeans"
+  category    String? // e.g. "Clothing", "Bedding"
+  price       Float
+  image       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  customerId  String
+  customer    User        @relation(fields: [customerId], references: [id])
+  shopId      String
+  shop        Shop        @relation(fields: [shopId], references: [id])
+  
+  status      OrderStatus @default(PENDING)
+  totalAmount Float
+  
+  // Order items could be a JSON or a separate table, keeping simple for now
+  items       Json        // e.g. [{ serviceId: "...", quantity: 2, price: 10 }]
+  
+  pickupDate  DateTime?
+  notes       String?
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  READY_FOR_PICKUP
+  COMPLETED
+  CANCELLED
+}
+
+model EmailOTP {
+  id        String   @id @default(uuid())
+  email     String
+  otp       String   // 6-digit code
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  
+  @@index([email, verified])
+}

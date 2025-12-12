@@ -1,65 +1,77 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Sparkles, ShieldCheck, Clock } from "lucide-react";
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
+        
+      {/* Background Decor */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+          <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-500/20 rounded-full blur-[120px] animate-pulse"></div>
+          <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
+
+      <main className="z-10 flex flex-col items-center text-center max-w-4xl mx-auto space-y-10">
+        
+        {/* Hero Badge */}
+        <div className="glass-panel px-4 py-1.5 rounded-full flex items-center gap-2 animate-in fade-in slide-in-from-top-4 duration-700">
+            <Sparkles className="h-4 w-4 text-yellow-400" />
+            <span className="text-sm font-semibold text-gray-600">Premium Laundry Service</span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Hero Title */}
+        <h1 className="text-6xl md:text-8xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
+          CleanMatch
+        </h1>
+
+        {/* Hero Description */}
+        <p className="text-xl md:text-2xl text-gray-500 max-w-2xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+          Experience the future of laundry. 
+          <br className="hidden md:block" />
+          Connect with top-rated local shops for premium care.
+        </p>
+
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
+            <Link 
+                href="/login"
+                className="group relative px-8 py-4 bg-gray-900 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/20 hover:shadow-2xl hover:shadow-blue-500/40 hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto"
+            >
+                <span className="flex items-center gap-2">
+                    Get Started <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </span>
+            </Link>
+            
+            <Link 
+                href="/login" // Or Learn More section
+                className="px-8 py-4 bg-white/50 backdrop-blur-sm border border-white/40 text-gray-700 rounded-2xl font-bold text-lg hover:bg-white/80 transition-all w-full sm:w-auto"
+            >
+                Start Shop
+            </Link>
         </div>
+
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mt-16 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
+            {[
+                { icon: Clock, title: "Fast Turnaround", desc: "Get your clothes back in 24h." },
+                { icon: ShieldCheck, title: "Adding Trust", desc: "Verified shops only." },
+                { icon: Sparkles, title: "Premium Quality", desc: "Best-in-class cleaning." }
+            ].map((feature, i) => (
+                <div key={i} className="glass-card p-6 rounded-3xl flex flex-col items-center">
+                    <div className="p-3 bg-blue-50 rounded-2xl mb-4 text-blue-600">
+                        <feature.icon className="h-6 w-6" />
+                    </div>
+                    <h3 className="font-bold text-gray-900 mb-1">{feature.title}</h3>
+                    <p className="text-gray-500 text-sm">{feature.desc}</p>
+                </div>
+            ))}
+        </div>
+
       </main>
+
+      <footer className="absolute bottom-6 text-gray-400 text-sm">
+        &copy; {new Date().getFullYear()} CleanMatch Inc.
+      </footer>
     </div>
   );
 }

@@ -1,26 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 :root {
+  /* Muse Color Palette */
+  --primary: #003d29; /* Dark Jungle Green */
+  --primary-foreground: #ffffff;
+  
+  --secondary: #fbf0e4; /* Champagne Cream */
+  --secondary-foreground: #003d29;
+  
+  --accent: #231f20; /* Dark Grey/Black for text */
   --background: #ffffff;
-  --foreground: #171717;
+  --surface: #ffffff;
+  
+  --muted: #f3f4f6;
+  --border: #e5e7eb;
+  
+  --font-sans: 'Manrope', sans-serif;
+  
+  /* Status Colors */
+  --success: #059669;
+  --warning: #d97706;
+  --error: #dc2626;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Base Styles */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background);
+  color: var(--accent);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--primary);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+/* Component Classes */
+
+/* Button: Primary */
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+  border-radius: 9999px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  background-color: #002a1c;
+}
+
+/* Button: Secondary */
+.btn-secondary {
+  background-color: var(--secondary);
+  color: var(--primary);
+  border-radius: 9999px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.btn-secondary:hover {
+  background-color: #ffe4cc;
+}
+
+/* Button: Outline */
+.btn-outline {
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 9999px;
+  padding: 0.625rem 2rem;
+  font-weight: 600;
+  background-color: transparent;
+  transition: all 0.3s ease;
+}
+.btn-outline:hover {
+  background-color: var(--primary);
+  color: white;
+}
+
+/* Inputs */
+.input-pill {
+  width: 100%;
+  background-color: #f3f4f6;
+  border-radius: 9999px;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid transparent;
+  outline: none;
+  transition: all 0.2s ease;
+}
+.input-pill:focus {
+  border-color: var(--primary);
+  background-color: white;
+}
+
+/* Cards */
+.muse-card {
+  background-color: white;
+  border-radius: 1.5rem; /* 24px */
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+  border: 1px solid transparent;
+}
+.muse-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: var(--secondary);
+}
+
+/* Shop Card Image */
+.shop-card-image {
+  aspect-ratio: 4/3;
+  background-color: var(--secondary);
+  width: 100%;
+  object-fit: cover;
 }
