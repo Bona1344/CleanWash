@@ -110,13 +110,4 @@ enum OrderStatus {
   CANCELLED
 }
 
-model EmailOTP {
-  id        String   @id @default(uuid())
-  email     String
-  otp       String   // 6-digit code
-  expiresAt DateTime
-  verified  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  
-  @@index([email, verified])
-}
+

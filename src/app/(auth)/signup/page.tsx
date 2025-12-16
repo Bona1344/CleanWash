@@ -6,6 +6,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Mail, Lock, Loader2, User, Store } from "lucide-react";
 import { auth } from "@/lib/firebaseClient";
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "firebase/auth";
+
+// ... (Debugger removed)
+
+export default function SignupPage() {
+  // ... existing component logic ...
+  // ... return statement without <NetworkDebugger /> ...
+}
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -28,30 +36,51 @@ export default function SignupPage() {
     setError("");
     
     try {
-      // Step 1: Send OTP to email
-      const otpResponse = await fetch("/api/auth/send-otp", {
+      // 1. Create Firebase Account
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCredential.user, { displayName: name });
+
+      // 2. Send Verification Email
+      await sendEmailVerification(userCredential.user);
+
+      // 3. Create User in Database
+      const response = await fetch("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, name }),
+        body: JSON.stringify({
+          uid: userCredential.user.uid,
+          email: userCredential.user.email,
+          name: name,
+          role: role,
+          intent: "signup",
+        }),
       });
 
-      const otpData = await otpResponse.json();
+      const data = await response.json();
 
-      if (!otpResponse.ok) {
-        setError(otpData.error || "Failed to send verification code");
-        return;
+      if (!response.ok) {
+        if (response.status === 409 && data.shouldSignIn) {
+          setError(data.error);
+          await auth.signOut();
+          return;
+        }
+        throw new Error(data.error || "Failed to create account");
       }
 
-      // Step 2: Redirect to OTP verification page with user data
-      const params = new URLSearchParams({
-        email,
-        name,
-        password,
-        role,
-      });
-      router.push(`/verify-otp?${params.toString()}`);
+      // 4. Redirect to Check Email page
+      router.push(`/check-email?email=${encodeURIComponent(email)}&role=${role}`);
     } catch (err: any) {
-      setError(err.message || "Failed to send verification code. Please try again.");
+      console.error("Signup error:", err);
+      // Improved Error Logging for User
+      let errorMsg = err.message || "Failed to sign up.";
+      if (err.code === "auth/network-request-failed") {
+        errorMsg = "Network Error: Firebase could not be reached. Please check your internet connection or try the Network Debugger below.";
+      }
+      setError(errorMsg);
+      
+      if (err.code === "auth/email-already-in-use") {
+        setError("Email already in use. Please sign in instead.");
+      }
     } finally {
       setIsSigningUp(false);
     }
@@ -249,6 +278,8 @@ export default function SignupPage() {
             Sign In
           </Link>
         </p>
+
+        <NetworkDebugger />
       </div>
     </div>
   );

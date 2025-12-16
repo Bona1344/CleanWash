@@ -15,11 +15,30 @@ export default function DashboardPage() {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [roleLoading, setRoleLoading] = useState(true);
 
-  // Redirect if not logged in
+  // Redirect if not logged in or email not verified
   useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login");
-    }
+    const checkVerification = async () => {
+      if (!loading && user) {
+        if (!user.emailVerified) {
+          try {
+             // Force refresh token to check if they verified in another tab
+             await user.reload();
+             // Check again after reload
+             if (!user.emailVerified) {
+                router.push("/check-email");
+             }
+          } catch (e) {
+             console.error("Error reloading user:", e);
+             // If reload fails (network?), still redirect
+             router.push("/check-email");
+          }
+        }
+      } else if (!loading && !user) {
+        router.push("/login");
+      }
+    };
+    
+    checkVerification();
   }, [user, loading, router]);
 
   // Fetch user role from database

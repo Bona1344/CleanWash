@@ -8,6 +8,8 @@ import { Mail, Lock, Loader2, User, Store } from "lucide-react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebaseClient";
 
+
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,22 +42,17 @@ export default function LoginPage() {
           const dbUser = await res.json();
           const targetRole = role === "shop_owner" ? "SHOP_OWNER" : "CUSTOMER";
           
-          // Allow Shop Owners to login as 'Customer' if they want? 
-          // User requested Strict "Does not exist as customer" prompt. 
-          // So if I am a Shop Owner, I DO NOT exist as a customer in this context.
-          
-          // Special Case: Shop Owners implicitly have customer capabilities usually, 
-          // BUT user said: "Account does not exist as a customer" if not registered as such.
-          // Since our DB has single role per user, this is a strict mismatch.
-          
+          // Use Strict Role Check
           if (dbUser.role !== targetRole) {
-              // But wait, if they have a shop, they ARE a shop owner.
-              if (dbUser.shop && role === "customer") {
-                   throw new Error("This account is registered as a Shop Owner. Please sign in as a Shop Owner.");
-              }
-               if (!dbUser.shop && role === "shop_owner") {
+               // If trying to login as Shop Owner but role is Customer
+               if (dbUser.role === "CUSTOMER" && role === "shop_owner") {
                    throw new Error("This account exists as a Customer. Please sign in as a Customer.");
                }
+               // If trying to login as Customer but role is Shop Owner
+               if (dbUser.role === "SHOP_OWNER" && role === "customer") {
+                   throw new Error("This account is registered as a Shop Owner. Please sign in as a Shop Owner.");
+               }
+               
                // Fallback strict check
                throw new Error(role === "customer" 
                     ? "This account does not exist as a customer. Please create a customer account."
@@ -75,7 +72,12 @@ export default function LoginPage() {
             ? "This account does not exist as a customer. Please create a customer account."
             : "This account does not exist as a shop owner. Please create a shop owner account.");
       } else {
-          setError(err.message || "Failed to login.");
+          // Improved error message for network issues
+          if (err.code === "auth/network-request-failed") {
+            setError("Network Error: Could not reach Firebase. Check your internet connection or try the Network Debugger below.");
+          } else {
+            setError(err.message || "Failed to login.");
+          }
       }
       console.error(err);
     } finally {
@@ -231,6 +233,8 @@ export default function LoginPage() {
             Sign Up
           </Link>
         </p>
+
+        <NetworkDebugger />
       </div>
     </div>
   );

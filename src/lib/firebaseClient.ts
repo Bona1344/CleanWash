@@ -18,6 +18,12 @@ const firebaseConfig = {
 };
 
 export const getFirebaseApp = () => {
+  console.log("🔥 Firebase Config Check:", {
+    apiKey: firebaseConfig.apiKey ? "Present" : "Missing",
+    authDomain: firebaseConfig.authDomain,
+    projectId: firebaseConfig.projectId
+  });
+  
   if (!getApps().length) {
     return initializeApp(firebaseConfig);
   }
