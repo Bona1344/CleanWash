@@ -11,7 +11,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Shop ID or Customer ID required" }, { status: 400 });
   }
 
-  const where = shopId ? { shopId } : { customerId };
+  const where = shopId ? { shopId } : { customerId: customerId! };
 
   try {
     const orders = await prisma.order.findMany({

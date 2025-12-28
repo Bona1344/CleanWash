@@ -1,23 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap");
 @import "tailwindcss";
 
 :root {
-  /* Muse Color Palette */
-  --primary: #003d29; /* Dark Jungle Green */
+  /* Ryns Color Palette */
+  --primary: #136dec; /* Primary Blue */
+  --primary-hover: #0f5fd4;
   --primary-foreground: #ffffff;
-  
-  --secondary: #fbf0e4; /* Champagne Cream */
-  --secondary-foreground: #003d29;
-  
-  --accent: #231f20; /* Dark Grey/Black for text */
-  --background: #ffffff;
-  --surface: #ffffff;
-  
-  --muted: #f3f4f6;
-  --border: #e5e7eb;
-  
-  --font-sans: 'Manrope', sans-serif;
-  
+
+  --background-light: #f6f7f8;
+  --background-dark: #101822;
+
+  --surface-light: #ffffff;
+  --surface-dark: #1a2634;
+
+  --text-primary: #111418;
+  --text-secondary: #6b7280;
+  --text-dark: #ffffff;
+
+  --border-light: #e5e7eb;
+  --border-dark: #2a3646;
+
+  --font-display: "Inter", sans-serif;
+
   /* Status Colors */
   --success: #059669;
   --warning: #d97706;
@@ -26,17 +30,39 @@
 
 /* Base Styles */
 body {
-  background-color: var(--background);
-  color: var(--accent);
-  font-family: var(--font-sans);
+  background-color: var(--background-light);
+  color: var(--text-primary);
+  font-family: var(--font-display);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  color: var(--primary);
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-primary);
   font-weight: 700;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.015em;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--background-dark);
+    color: var(--text-dark);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--text-dark);
+  }
 }
 
 /* Component Classes */
@@ -45,75 +71,74 @@ h1, h2, h3, h4, h5, h6 {
 .btn-primary {
   background-color: var(--primary);
   color: white;
-  border-radius: 9999px;
-  padding: 0.75rem 2rem;
-  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0.625rem 2rem;
+  font-weight: 700;
   transition: all 0.3s ease;
 }
 .btn-primary:hover {
-  background-color: #002a1c;
+  background-color: var(--primary-hover);
+  box-shadow: 0 4px 6px -1px rgba(19, 109, 236, 0.3);
 }
 
 /* Button: Secondary */
 .btn-secondary {
-  background-color: var(--secondary);
+  background-color: var(--background-light);
   color: var(--primary);
-  border-radius: 9999px;
-  padding: 0.75rem 2rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-.btn-secondary:hover {
-  background-color: #ffe4cc;
-}
-
-/* Button: Outline */
-.btn-outline {
-  border: 2px solid var(--primary);
-  color: var(--primary);
-  border-radius: 9999px;
+  border-radius: 0.5rem;
   padding: 0.625rem 2rem;
   font-weight: 600;
-  background-color: transparent;
   transition: all 0.3s ease;
+  border: 1px solid var(--border-light);
 }
-.btn-outline:hover {
-  background-color: var(--primary);
-  color: white;
+.btn-secondary:hover {
+  background-color: #e5e7eb;
 }
 
 /* Inputs */
-.input-pill {
+.input-modern {
   width: 100%;
-  background-color: #f3f4f6;
-  border-radius: 9999px;
-  padding: 0.75rem 1.5rem;
-  border: 1px solid transparent;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-light);
   outline: none;
   transition: all 0.2s ease;
 }
-.input-pill:focus {
+.input-modern:focus {
   border-color: var(--primary);
   background-color: white;
+  box-shadow: 0 0 0 3px rgba(19, 109, 236, 0.1);
 }
 
 /* Cards */
-.muse-card {
+.service-card {
   background-color: white;
-  border-radius: 1.5rem; /* 24px */
+  border-radius: 0.75rem;
   overflow: hidden;
-  transition: box-shadow 0.3s ease;
-  border: 1px solid transparent;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-light);
 }
-.muse-card:hover {
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  border-color: var(--secondary);
+.service-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
 }
 
-/* Shop Card Image */
-.shop-card-image {
-  aspect-ratio: 4/3;
-  background-color: var(--secondary);
-  width: 100%;
-  object-fit: cover;
+/* Material Icons */
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: "liga";
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
 }

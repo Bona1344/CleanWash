@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { ShoppingBag, Store, MapPin, User } from "lucide-react";
-import ReviewModal from "@/components/ReviewModal";
+import { Store } from "lucide-react";
 import Image from "next/image";
+import CustomerHeader from "@/components/customer/CustomerHeader";
+import CustomerFooter from "@/components/customer/CustomerFooter";
+import Link from "next/link";
 
 interface CustomerDashboardProps {
   user: any;
@@ -13,10 +15,10 @@ interface CustomerDashboardProps {
 
 export default function CustomerDashboard({ user }: CustomerDashboardProps) {
   const router = useRouter();
-  const { logout } = useAuth();
+  // const { logout } = useAuth(); // Handled in CustomerHeader now
   const [customerOrders, setCustomerOrders] = useState<any[]>([]);
   const [shops, setShops] = useState<any[]>([]);
-  const [reviewModal, setReviewModal] = useState({ show: false, shopId: "", shopName: "" });
+  // const [reviewModal, setReviewModal] = useState({ show: false, shopId: "", shopName: "" });
 
   useEffect(() => {
     fetchShops();
@@ -44,240 +46,191 @@ export default function CustomerDashboard({ user }: CustomerDashboardProps) {
   };
 
   return (
-    <div className="font-sans text-[#231f20]">
-      {/* 1. Top Bar */}
-      <div className="bg-[#003d29] text-white px-8 py-2 flex justify-between items-center text-sm font-medium">
-        <div className="flex items-center gap-4">
-            <span>📞 +234 800 123 4567</span>
-            <span className="opacity-50">|</span>
-            <span>Get 50% Off on First Order</span>
-        </div>
-        <div className="flex items-center gap-4">
-            <span>Lagos, NG</span>
-            <span className="opacity-50">|</span>
-            <span className="cursor-pointer hover:underline">English</span>
-        </div>
-      </div>
+    <div className="flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark font-display text-[#111418] dark:text-white">
+      <CustomerHeader />
 
-      {/* 2. Navbar */}
-      <nav className="bg-white px-8 py-5 flex items-center justify-between border-b border-gray-100 sticky top-0 z-50">
-          <div className="flex items-center gap-12">
-              <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/dashboard')}>
-                <div className="h-8 w-8 bg-[#003d29] rounded-full flex items-center justify-center text-white font-bold">C</div>
-                <span className="text-2xl font-extrabold text-[#003d29] tracking-tight">CleanMatch</span>
-              </div>
-              
-              <div className="hidden md:flex items-center gap-8 font-semibold text-[#231f20]">
-                  <a href="#" className="hover:text-[#003d29]">Categories</a>
-                  <a href="#" className="hover:text-[#003d29]">Deals</a>
-                  <a href="#" className="hover:text-[#003d29]">What's New</a>
-                  <a href="#" className="hover:text-[#003d29]">Delivery</a>
-              </div>
-          </div>
-
-          <div className="flex items-center gap-8">
-              <div className="relative hidden lg:block">
-                  <input 
-                    type="text" 
-                    placeholder="Search Laundry..." 
-                    className="bg-[#f3f4f6] rounded-full px-5 py-2.5 w-64 focus:outline-none focus:ring-1 focus:ring-[#003d29] text-sm"
-                  />
-                  <ShoppingBag className="absolute right-4 top-2.5 h-4 w-4 text-gray-400" />
-              </div>
-
-              <div className="flex items-center gap-4 font-semibold cursor-pointer" onClick={() => router.push('/customer/profile')}>
-                  <User className="h-5 w-5" />
-                  <span>Account</span>
-              </div>
-              
-               <div className="flex items-center gap-4 font-semibold cursor-pointer text-red-600" onClick={logout}>
-                  <span>Sign Out</span>
-              </div>
-          </div>
-      </nav>
-
-      {/* 3. Hero Section */}
-      <div className="bg-[#fbf0e4] min-h-[500px] px-8 md:px-20 relative overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center min-h-[500px] max-w-7xl mx-auto">
-            {/* Left: Text Content */}
-            <div className="space-y-6 py-12">
-                <h1 className="text-5xl md:text-6xl font-extrabold text-[#003d29] leading-tight">
-                    Fresh Laundry <br/> Within Hours.
-                </h1>
-                <p className="text-lg text-[#231f20]/80 max-w-md">
-                    Experience premium fabric care. We pick up, clean, and deliver your clothes spotless and fresh.
-                </p>
-                <button className="bg-[#003d29] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[#002a1c] transition-colors shadow-lg shadow-[#003d29]/20">
-                    Book Now
-                </button>
-            </div>
-            
-            {/* Right: Laundry Image */}
-            <div className="relative h-[400px] lg:h-[500px] rounded-3xl overflow-hidden">
-                <Image 
-                    src="/laundry-hero-new.jpg"
-                    alt="Fresh laundry service"
-                    fill
-                    className="object-cover"
-                    priority
-                />
-            </div>
-        </div>
-      </div>
-
-      {/* 4. Filters & Content */}
-      <div className="px-8 md:px-20 py-16 space-y-12 bg-white">
+      <main className="flex-1 py-8 px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto w-full"> {/* Increased max-w for search results */}
           
-          {/* Filter Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-3 overflow-x-auto pb-2">
-                  <button className="bg-[#f3f4f6] hover:bg-[#003d29] hover:text-white px-6 py-2 rounded-full font-semibold transition-all">All</button>
-                  <button className="bg-[#f3f4f6] hover:bg-[#003d29] hover:text-white px-6 py-2 rounded-full font-semibold transition-all">Dry Clean</button>
-                  <button className="bg-[#f3f4f6] hover:bg-[#003d29] hover:text-white px-6 py-2 rounded-full font-semibold transition-all">Wash & Fold</button>
-                  <button className="bg-[#f3f4f6] hover:bg-[#003d29] hover:text-white px-6 py-2 rounded-full font-semibold transition-all">Ironing</button>
-              </div>
-              
-              <button className="flex items-center gap-2 border border-gray-300 rounded-full px-5 py-2 font-semibold hover:border-[#003d29]">
-                  Sort by <span className="text-xs">▼</span>
-              </button>
+          {/* Breadcrumb (Optional, but good for UX) */}
+          <div className="flex flex-wrap gap-2 mb-4 text-sm font-medium">
+             <Link href="/dashboard" className="text-[#617289] dark:text-gray-400 hover:text-[#136dec]">Home</Link>
+             <span className="text-[#617289] dark:text-gray-400">/</span>
+             <span className="text-[#111418] dark:text-white">Search Results</span>
           </div>
 
-          <h2 className="text-3xl font-bold text-[#003d29]">Recommended For You</h2>
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
+               <h2 className="text-[#111418] dark:text-white tracking-tight text-[28px] font-bold leading-tight">
+                   {shops.length} Laundromats near 'Downtown'
+               </h2>
+               <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+                   {/* View Toggle */}
+                   <div className="flex h-10 items-center justify-center rounded-lg bg-[#f0f2f4] dark:bg-gray-800 p-1">
+                       <label className="flex cursor-pointer h-full items-center justify-center overflow-hidden rounded-md px-3 bg-white dark:bg-gray-600 shadow-sm text-[#136dec] dark:text-white text-sm font-medium transition-all">
+                           <span className="material-symbols-outlined text-[18px] mr-2">format_list_bulleted</span>
+                           <span className="truncate">List</span>
+                           <input type="radio" name="view-toggle" value="List View" className="invisible w-0 absolute" defaultChecked />
+                       </label>
+                       <label className="flex cursor-pointer h-full items-center justify-center overflow-hidden rounded-md px-3 text-[#617289] dark:text-gray-400 hover:text-[#111418] dark:hover:text-white text-sm font-medium transition-all">
+                           <span className="material-symbols-outlined text-[18px] mr-2">map</span>
+                           <span className="truncate">Map</span>
+                           <input type="radio" name="view-toggle" value="Map View" className="invisible w-0 absolute" />
+                       </label>
+                   </div>
+                   
+                   {/* Sort Dropdown */}
+                   <div className="relative">
+                       <select className="h-10 pl-3 pr-8 rounded-lg border-none bg-[#f0f2f4] dark:bg-gray-800 text-[#111418] dark:text-white text-sm font-medium focus:ring-1 focus:ring-[#136dec] cursor-pointer appearance-none">
+                           <option>Recommended</option>
+                           <option>Price: Low to High</option>
+                           <option>Rating: High to Low</option>
+                           <option>Distance: Nearest</option>
+                       </select>
+                       <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-[#617289]">expand_more</span>
+                   </div>
+               </div>
+          </div>
 
-          {/* Shop Grid - Muse Product Card Style */}
-          {shops.length === 0 ? (
-            <div className="text-center py-20 bg-gray-50 rounded-3xl">
-              <p className="text-gray-500 text-lg">No shops found yet.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {shops
-                .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-                .map((shop) => (
-                <div key={shop.id} className="bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
-                  {/* Image Area */}
-                  <div className="relative aspect-square bg-[#f3f4f6] overflow-hidden">
-                      <div className="absolute inset-0 flex items-center justify-center text-gray-300 group-hover:scale-105 transition-transform duration-300">
-                          <Store className="h-20 w-20" />
-                      </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              {/* Sidebar Filters */}
+              <aside className="hidden lg:block lg:col-span-3">
+                  <div className="sticky top-24 space-y-8 pr-4">
                       
-                      {/* Favorite Heart Icon (top-right) */}
-                      <button className="absolute top-3 right-3 h-8 w-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-gray-100 transition-colors z-10">
-                          <span className="text-gray-600 text-lg">♡</span>
-                      </button>
-                  </div>
-
-                  {/* Card Content */}
-                  <div className="p-4 space-y-2">
-                      {/* Name and Price */}
-                      <div className="flex justify-between items-start gap-2">
-                          <h3 className="text-base font-bold text-[#231f20] line-clamp-1 flex-1">{shop.name}</h3>
-                          <span className="text-base font-bold text-[#231f20] whitespace-nowrap">
-                            ${(shop._count?.services || 0) * 10}<sup className="text-xs">.00</sup>
-                          </span>
-                      </div>
-                      
-                      {/* Description */}
-                      <p className="text-sm text-gray-500 line-clamp-1">{shop.description || "Premium laundry service"}</p>
-                      
-                      {/* Rating and Review Count */}
-                      <div className="flex items-center gap-1 text-sm">
-                          <div className="flex items-center text-green-600">
-                              {[...Array(5)].map((_, i) => (
-                                  <span key={i} className={i < Math.floor(shop.rating || 0) ? "text-green-600" : "text-gray-300"}>★</span>
+                      {/* Service Type */}
+                      <div className="flex flex-col gap-3">
+                          <h3 className="text-[#111418] dark:text-white text-base font-bold leading-normal">Service Type</h3>
+                          <div className="flex flex-col gap-2">
+                              {["Wash & Fold", "Dry Cleaning", "Ironing", "Self-Service"].map((service) => (
+                                  <label key={service} className="flex items-center gap-3 cursor-pointer group">
+                                      <div className="relative flex items-center">
+                                          <input type="checkbox" className="peer h-5 w-5 rounded border-gray-300 dark:border-gray-600 text-[#136dec] focus:ring-[#136dec] bg-white dark:bg-gray-800" />
+                                      </div>
+                                      <span className="text-[#111418] dark:text-gray-300 text-sm font-medium group-hover:text-[#136dec] transition-colors">{service}</span>
+                                  </label>
                               ))}
                           </div>
-                          <span className="text-gray-600 font-medium">({shop._count?.reviews || 121})</span>
                       </div>
-                      
-                      {/* Book Button */}
-                      <button 
-                        onClick={() => router.push(`/book/${shop.id}`)}
-                        className="w-full bg-transparent border-2 border-[#003d29] text-[#003d29] font-bold py-2.5 rounded-full hover:bg-[#003d29] hover:text-white transition-all mt-2"
-                      >
-                        Book
-                      </button>
+
+                      <hr className="border-[#e5e7eb] dark:border-gray-700" />
+
+                      {/* Rating */}
+                      <div className="flex flex-col gap-3">
+                          <h3 className="text-[#111418] dark:text-white text-base font-bold leading-normal">Rating</h3>
+                          <div className="flex flex-col gap-2">
+                              <label className="flex items-center gap-3 cursor-pointer">
+                                  <input type="radio" name="rating" className="h-4 w-4 border-gray-300 dark:border-gray-600 text-[#136dec] focus:ring-[#136dec] bg-white dark:bg-gray-800" />
+                                  <div className="flex items-center gap-1 text-[#111418] dark:text-gray-300">
+                                      <span className="text-sm font-medium">4.5 & up</span>
+                                      <span className="material-symbols-outlined text-[16px] text-yellow-500 fill-current">star</span>
+                                  </div>
+                              </label>
+                              <label className="flex items-center gap-3 cursor-pointer">
+                                  <input type="radio" name="rating" className="h-4 w-4 border-gray-300 dark:border-gray-600 text-[#136dec] focus:ring-[#136dec] bg-white dark:bg-gray-800" />
+                                  <div className="flex items-center gap-1 text-[#111418] dark:text-gray-300">
+                                      <span className="text-sm font-medium">4.0 & up</span>
+                                      <span className="material-symbols-outlined text-[16px] text-yellow-500 fill-current">star</span>
+                                  </div>
+                              </label>
+                              <label className="flex items-center gap-3 cursor-pointer">
+                                  <input type="radio" name="rating" className="h-4 w-4 border-gray-300 dark:border-gray-600 text-[#136dec] focus:ring-[#136dec] bg-white dark:bg-gray-800" defaultChecked />
+                                  <div className="flex items-center gap-1 text-[#111418] dark:text-gray-300">
+                                      <span className="text-sm font-medium">Any</span>
+                                  </div>
+                              </label>
+                          </div>
+                      </div>
+
+                      <hr className="border-[#e5e7eb] dark:border-gray-700" />
+
+                      {/* Price Range */}
+                      <div className="flex flex-col gap-3">
+                          <h3 className="text-[#111418] dark:text-white text-base font-bold leading-normal">Price Range</h3>
+                          <div className="flex items-center gap-2">
+                              <button className="flex-1 py-2 px-3 rounded-lg border border-[#e5e7eb] dark:border-gray-700 hover:border-[#136dec] text-sm font-medium text-[#111418] dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-[#136dec]/5 transition-all">$</button>
+                              <button className="flex-1 py-2 px-3 rounded-lg border border-[#136dec] bg-[#136dec]/10 text-[#136dec] text-sm font-bold transition-all">$$</button>
+                              <button className="flex-1 py-2 px-3 rounded-lg border border-[#e5e7eb] dark:border-gray-700 hover:border-[#136dec] text-sm font-medium text-[#111418] dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-[#136dec]/5 transition-all">$$$</button>
+                          </div>
+                      </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+              </aside>
 
-          {/* Recently Used Section */}
-          {customerOrders.length > 0 && (
-            <>
-              <h2 className="text-3xl font-bold text-[#003d29] mt-16">Recently Used</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {/* Get unique shops from customer orders */}
-                {Array.from(new Set(customerOrders.map(order => order.shopId)))
-                  .slice(0, 4) // Show max 4 recent shops
-                  .map((shopId) => {
-                    const shop = shops.find(s => s.id === shopId);
-                    if (!shop) return null;
-                    
-                    return (
-                      <div key={shop.id} className="bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
-                        {/* Image Area */}
-                        <div className="relative aspect-square bg-[#f3f4f6] overflow-hidden">
-                            <div className="absolute inset-0 flex items-center justify-center text-gray-300 group-hover:scale-105 transition-transform duration-300">
-                                <Store className="h-20 w-20" />
-                            </div>
-                            
-                            {/* "Used Before" Badge */}
-                            <div className="absolute top-3 left-3 bg-[#003d29] text-white px-3 py-1 rounded-full text-xs font-bold">
-                                Previously Used
-                            </div>
-                        </div>
-
-                        {/* Card Content */}
-                        <div className="p-4 space-y-2">
-                            {/* Name and Price */}
-                            <div className="flex justify-between items-start gap-2">
-                                <h3 className="text-base font-bold text-[#231f20] line-clamp-1 flex-1">{shop.name}</h3>
-                                <span className="text-base font-bold text-[#231f20] whitespace-nowrap">
-                                  ${(shop._count?.services || 0) * 10}<sup className="text-xs">.00</sup>
-                                </span>
-                            </div>
-                            
-                            {/* Description */}
-                            <p className="text-sm text-gray-500 line-clamp-1">{shop.description || "Premium laundry service"}</p>
-                            
-                            {/* Rating and Review Count */}
-                            <div className="flex items-center gap-1 text-sm">
-                                <div className="flex items-center text-green-600">
-                                    {[...Array(5)].map((_, i) => (
-                                        <span key={i} className={i < Math.floor(shop.rating || 0) ? "text-green-600" : "text-gray-300"}>★</span>
-                                    ))}
-                                </div>
-                                <span className="text-gray-600 font-medium">({shop._count?.reviews || 121})</span>
-                            </div>
-                            
-                            {/* Book Again Button */}
-                            <button 
-                              onClick={() => router.push(`/book/${shop.id}`)}
-                              className="w-full bg-transparent border-2 border-[#003d29] text-[#003d29] font-bold py-2.5 rounded-full hover:bg-[#003d29] hover:text-white transition-all mt-2"
-                            >
-                              Book Again
-                            </button>
-                        </div>
+              {/* Main Content (Shop Grid) */}
+              <main className="col-span-1 lg:col-span-9">
+                  {shops.length === 0 ? (
+                      <div className="text-center py-20 bg-gray-50 rounded-3xl col-span-full">
+                          <Store className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+                          <p className="text-gray-500 text-lg">No laundromats found nearby.</p>
                       </div>
-                    );
-                  })}
-              </div>
-            </>
-          )}
-      </div>
+                  ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {shops.map((shop) => (
+                              <div key={shop.id} className="group flex flex-col overflow-hidden rounded-xl border border-[#e5e7eb] dark:border-gray-700 bg-white dark:bg-[#1a2634] shadow-sm hover:shadow-md transition-shadow duration-300 cursor-pointer" onClick={() => router.push(`/book/${shop.id}`)}>
+                                  {/* Image Section */}
+                                  <div className="relative h-48 w-full overflow-hidden bg-gray-100">
+                                      {/* Placeholder Image Logic */}
+                                      <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-400 group-hover:scale-105 transition-transform duration-500">
+                                          <Store className="h-16 w-16" />
+                                      </div>
+                                      {/* Use next/image if shop.imageUrl exists eventually */}
+                                      {/* <Image ... /> */}
+                                      
+                                      <div className="absolute top-3 right-3 rounded-full bg-white dark:bg-gray-800 p-1.5 shadow-sm cursor-pointer hover:text-red-500 transition-colors z-10" onClick={(e) => { e.stopPropagation(); /* Add favorite logic */ }}>
+                                          <span className="material-symbols-outlined text-[20px]">favorite</span>
+                                      </div>
+                                      
+                                      {/* Example Badge (Static for now, could be dynamic) */}
+                                      <div className="absolute bottom-3 left-3">
+                                          <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Open Now</span>
+                                      </div>
+                                  </div>
 
-      {reviewModal.show && (
-          <ReviewModal 
-              shopId={reviewModal.shopId}
-              shopName={reviewModal.shopName}
-              customerId={user?.uid}
-              onClose={() => setReviewModal({ show: false, shopId: "", shopName: "" })}
-              onSuccess={() => fetchShops()}
-          />
-      )}
+                                  {/* Content Section */}
+                                  <div className="flex flex-1 flex-col p-4">
+                                      <div className="flex justify-between items-start mb-1">
+                                          <h3 className="text-lg font-bold text-[#111418] dark:text-white line-clamp-1 group-hover:text-[#136dec] transition-colors">{shop.name}</h3>
+                                      </div>
+                                      
+                                      <div className="flex items-center gap-1 mb-3">
+                                          <span className="material-symbols-outlined text-[16px] text-yellow-500 fill-current">star</span>
+                                          <span className="text-sm font-bold text-[#111418] dark:text-gray-200">{shop.rating?.toFixed(1) || "New"}</span>
+                                          <span className="text-sm text-[#617289] dark:text-gray-400">({shop._count?.reviews || 0} reviews)</span>
+                                          <span className="mx-1 text-[#617289]">•</span>
+                                          <span className="text-sm text-[#617289] dark:text-gray-400">0.8 miles</span>
+                                      </div>
+
+                                      <div className="flex flex-wrap gap-2 mb-4">
+                                          <span className="inline-flex items-center rounded-full bg-[#f0f2f4] dark:bg-gray-700 px-2.5 py-0.5 text-xs font-medium text-[#111418] dark:text-gray-300">Wash & Fold</span>
+                                          <span className="inline-flex items-center rounded-full bg-[#f0f2f4] dark:bg-gray-700 px-2.5 py-0.5 text-xs font-medium text-[#111418] dark:text-gray-300">Dry Cleaning</span>
+                                      </div>
+
+                                      <div className="mt-auto flex items-center justify-between border-t border-[#f0f2f4] dark:border-gray-700 pt-4">
+                                          <div className="flex flex-col">
+                                              <span className="text-xs text-[#617289] dark:text-gray-400">Starting at</span>
+                                              <span className="text-base font-bold text-[#111418] dark:text-white">${((shop._count?.services || 1) * 1.50).toFixed(2)}<span className="text-sm font-normal text-[#617289]">/lb</span></span>
+                                          </div>
+                                          <button className="rounded-lg bg-[#136dec] px-4 py-2 text-sm font-bold text-white hover:bg-blue-600 transition-colors">
+                                              Details
+                                          </button>
+                                      </div>
+                                  </div>
+                              </div>
+                          ))}
+                      </div>
+                  )}
+                  
+                  {/* Load More Button */}
+                  {shops.length > 0 && (
+                      <div className="flex justify-center mt-12 mb-8">
+                          <button className="flex items-center justify-center gap-2 rounded-lg border border-[#e5e7eb] dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-3 text-sm font-bold text-[#111418] dark:text-white hover:bg-[#f0f2f4] dark:hover:bg-gray-700 transition-colors">
+                              <span>Show More Results</span>
+                              <span className="material-symbols-outlined text-[20px]">expand_more</span>
+                          </button>
+                      </div>
+                  )}
+              </main>
+          </div>
+      </main>
+
+      <CustomerFooter />
     </div>
   );
 }
